@@ -1,0 +1,114 @@
+<html>
+    <head>
+        <title>
+            {%block title%}
+            {%endblock%}
+        </title>
+    <script src='{{url_for('static',filename='scripts/modernizr-1.7.min.js')}}'></script>
+    <link rel='stylesheet'  href="{{url_for('static',filename='site.css')}}" type="text/css" />
+    <link rel='stylesheet'  href="{{url_for('static',filename='fam-icons.css')}}" type="text/css" />
+    <link rel='stylesheet' href='{{url_for('static',filename='jquery.ui.all.css')}}' type='text/css'/>
+    </head>
+    <body>
+        <div id='wrapper'>
+            
+            <div id='header'>
+                <div id='logo' style='float:left;'>
+                    <img src='{{url_for('static',filename='images/pharmalogo.png')}}' alt='Pharma logo'/>
+                </div>              
+               <div style='float:right;'>
+                 <script type="text/javascript"><!--
+google_ad_client = "ca-pub-8337091840955360";
+/* Leaderboard */
+google_ad_slot = "8878706298";
+google_ad_width = 728;
+google_ad_height = 90;
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+               </div>
+               <div class='clear'>
+                
+               </div>
+            </div>
+           
+         <div id='menu'>
+            <div class="box">
+			
+			<ul id="ldd_menu" class="ldd_menu">
+				<li>
+					<span>
+                                            <a href='/' style='color: white;'>Home</a></span><!-- Increases to 510px in width-->				
+				</li>
+				<li>
+					<span> <a href='/articles' style='color: white;'>Articles</a></span>
+					
+				</li>
+				<li>
+					<span> <a href='/news' style='color: white;'>News</a></span>
+					
+				</li>
+                                <li>
+					<span>Books</span>
+					
+				</li>
+                                <li>
+					<span>Videos</span>
+					
+				</li>
+                                <li>
+					<span>Jobs</span>
+					
+				</li>
+			</ul>
+		</div>
+         </div>   
+            <div id='content'>
+                
+                {%block content%}
+                {%endblock%}
+                
+            </div>
+            
+            <div id='footer'>
+                copyright@PharmaExplorer.com
+            </div>
+            
+        </div>
+        <script src='{{url_for('static',filename='scripts/jquery-1.5.1.min.js')}}'></script>
+        <script src='{{url_for('static',filename='scripts/jquery-ui-1.8.11.min.js')}}'></script>
+        <script type="text/javascript">
+            $(function() {
+				/**
+				 * the menu
+				 */
+				var $menu = $('#ldd_menu');
+				
+				/**
+				 * for each list element,
+				 * we show the submenu when hovering and
+				 * expand the span element (title) to 510px
+				 */
+				$menu.children('li').each(function(){
+					var $this = $(this);
+					var $span = $this.children('span');
+					$span.data('width',$span.width());
+					
+					$this.bind('mouseenter',function(){
+						$menu.find('.ldd_submenu').stop(true,true).hide();
+						$span.stop().animate({'width':'100px'},300,function(){
+							$this.find('.ldd_submenu').slideDown(300);
+						});
+					}).bind('mouseleave',function(){
+						$this.find('.ldd_submenu').stop(true,true).hide();
+						$span.stop().animate({'width':$span.data('width')+'px'},300);
+					});
+				});
+            });
+        </script>	
+        {%block scripts%}
+        {%endblock%}
+    </body>
+</html>

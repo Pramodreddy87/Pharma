@@ -1,0 +1,177 @@
+{%extends 'layout.html'%}
+{% block title %}
+    Admin|Create Article
+{%endblock%}
+{%block content%}
+
+        <div style='margin-top:10px;'>
+           
+         <h4>Create article</h4>   
+        </div>
+        <div id='article_body' style='margin-top:10px;'>            
+           
+            <div id='id_article_info_body'>
+                <b>Article Title</b>
+                <br/>
+                <input type='text' id='id_article_info_title' name='article_info_title'class='txtbox' style='width:400px;'/>
+                <br/>
+                <b>Article Content</b>
+                <br/>
+                <textarea id='id_article_info_description' name='article_info_description' class='textarea_article'></textarea>
+                <br/>
+                <b>Select a category</b>
+                <select id='id_article_cat_selection' style='width:150px;'>
+                    <option>
+                        Article
+                    </option>
+                    <option>
+                        News
+                    </option>
+                </select>
+                <br/>
+                <button id='id_submit_article_info'>Submit</button>
+                <!--<span id='id_submit_article_info' style='margin-top: 5px;' class='button'>Submit</span>-->
+            </div>
+            <br/>
+        <form method='post' action='{{url_for('upload_docs')}}' id='upload_article_docs' encType="multipart/form-data">
+            <div id='id_article_docs_header' class='article_header'>
+                 <div class='article_header_left'>
+                    <h5>Upload documents for the article <span id='id_article_title_display'></span></h5>
+                </div>
+                <div class='article_header_right'>
+                    <b id='id_article_doc_icon' class='article_icon'>+</b>
+                </div>
+                <div class='clear'>
+                    
+                </div>
+            </div>
+            <div id='id_article_docs_body'>
+                <b>Select files</b>
+                <br/>
+                <input type='file' id='id_doc_upload_file' name='name_doc_upload_file'/>
+                <br/>
+               <input type="submit" style='margin-top: 5px;' class='button' value="Add"/>
+                &nbsp;&nbsp;&nbsp;
+                <span id='id_save_article_doc' style='margin-top: 5px;' class='button'>Save</span>
+                 <br/>
+                 <div id='id_files_list' style='width: 400px;border:1px solid #ccc'>
+                    <h3>Recently added files list</h3>
+                 </div>
+            </div>
+            
+        </div>
+         <div id='msg_dialog' title='Message' style='text-align: justify'></div>
+    </form>
+{%endblock%}
+
+{%block scripts%}
+    <script src='{{url_for('static',filename='ckeditor.js')}}'></script>
+    <script src={{url_for('static',filename='scripts/JqueryForm.js')}}></script>
+    <script>
+        var article_status=0;
+        var article_id=0;
+        var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+        var editor = CKEDITOR.replace( 'id_article_info_description' );
+        $(document).ready(function()
+                          {
+                            hide_uploads();
+                            $('#id_submit_article_info').click(function()
+                                                               {
+                                                                var title=$.trim($('#id_article_info_title').val());
+                                                                var description=$.trim(editor.getData());
+                                                                if(title=='')
+                                                                {
+                                                                    $('#msg_dialog').text('Enter title');
+                                                                    $('#msg_dialog').dialog({'modal':true});
+                                                                }
+                                                                else if(description=='')
+                                                                {
+                                                                    $('#msg_dialog').text('Enter description');
+                                                                    $('#msg_dialog').dialog({'modal':true});
+                                                                }
+                                                                else
+                                                                {                                                                  
+                                                                    $.getJSON($SCRIPT_ROOT+'/ajax_submit_article_info',
+                                                                        {'title':title,'description':description,'cat':$('#id_article_cat_selection').val()}
+                                                                        ,function(response)
+                                                                           {
+                                                                                if(response.success=='1')
+                                                                                {
+                                                                                    // article_id=response.article_id;
+                                                                                     article_status=1;
+                                                                                     if($('#id_article_cat_selection').val()=='News')
+                                                                                     {
+                                                                                        
+                                                                                        $('#msg_dialog').text('News uploaded successfully !');
+                                                                                        $('#msg_dialog').dialog({'modal':true ,buttons:{'OK':{text:'OK',click:function()
+                                                                                                                {
+                                                                                                                   location.reload();
+                                                                                                                }}}});
+                                                                                       
+                                                                                     }
+                                                                                     else
+                                                                                     {
+                                                                                        show_uploads();
+                                                                                        hide_article_info();
+                                                                                        $('#id_article_title_display').text(title);
+                                                                                     }
+                                                                                
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    $('#msg_dialog').text('Failed to create article');
+                                                                                    $('#msg_dialog').dialog({'modal':true});
+                                                                                }                                                                              
+                                                                                
+                                                                           });                                                                    
+                                                                }
+                                    
+                                                                $('#upload_article_docs').ajaxForm({
+                                                                    beforeSend:function(){
+                                                                      $('#msg_dialog').text('Please wait uploading file');
+                                                                      $('#msg_dialog').dialog({'modal':true}); 
+                                                                    },
+                                                                    complete:function(xhr)
+                                                                    {
+                                                                        
+                                                                         $('#msg_dialog').dialog('close');
+                                                                         $('#id_doc_upload_file').val('');
+                                                                         try
+                                                                         {
+                                                                         $('#id_files_list').append('<br/><span>'+xhr.responseText+'</span>')
+                                                                         }
+                                                                         catch(e)
+                                                                         {
+                                                                            alert(error);
+                                                                         }
+                                                                    },
+                                                                   
+                                                                    });
+                                                                                               
+                                                               });
+                            $('#id_save_article_doc').click(function(){
+                            
+                                location.reload();
+                            });
+                            
+                          });
+        function show_uploads()
+        {
+            $('#id_article_docs_header').slideDown();
+            $('#id_article_docs_body').slideDown();
+        }
+        function hide_uploads()
+        {
+            $('#id_article_docs_header').hide();
+            $('#id_article_docs_body').hide();
+        }
+        function hide_article_info()
+        {
+             $('#id_article_info_body').slideUp();
+        }
+        function show_article_info()
+        {
+             $('#id_article_info_body').slideDown();
+        }
+    </script>
+    {%endblock%}

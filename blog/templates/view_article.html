@@ -1,0 +1,44 @@
+{% extends 'layout.html'%}
+{%block title%}
+    {{article[1]}}
+{%endblock%}
+{%block content%}
+   
+      <div id='id_article_title'>
+       <b>{{article[1]}}</b><br/>
+       
+      </div>
+    <div style='font-size: 12px;'> By <span style='color:blue;'>Admin</span>&nbsp;&nbsp;|&nbsp;&nbsp;{{article[3].strftime('%Y-%m-%d')}}&nbsp;&nbsp;|&nbsp;&nbsp;<span style='color:blue;'>Article</span></div>
+<hr/>
+    <div id='id_article_content'>
+        {{article[2]|safe}}
+    </div>
+    
+    <div id='id_download_files' >
+     <hr/>
+     <h4>Downloads:</h4>
+     {%if files%}
+           {% for file in files%}
+           <a href='/download_file/{{file[0]}}' name='download'>{{file[1]}}</a> 
+            </br>
+        {%endfor%}
+     {%else%}
+          <h5>No files</h5>
+     {%endif%}
+       
+    </div>    
+
+<div>
+<b>Comments:</b>
+<br/>
+Enter Name:<br/>
+<input type="txtName" name="txtName"/>
+<br/>
+Enter your comment:<br/>
+<textarea name="txtComment" style="height: 70px;width: 920px;"></textarea>
+<br/>
+<input type="submit" value="Submit"/>
+</div>
+
+{%endblock%}
+

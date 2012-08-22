@@ -1,0 +1,94 @@
+{% extends 'layout.html' %}
+{% block title%}
+  News
+  {%endblock%}
+{% block content %}
+  <div>
+   <table>
+         <tr>
+            <td>
+               <img src='static/images/circled_arrow_small.png'/>
+            </td>
+            <td>
+               <b style='font-size: 20px;color: #FF0303'>Pharma Spectrum News</b>
+            </td>
+         </tr>
+       </table>
+  </div>
+  <div id='adds'>
+    <div style='width:469px;float: left;'>
+     <script type="text/javascript"><!--
+google_ad_client = "ca-pub-8337091840955360";
+/* Banner */
+google_ad_slot = "8822722654";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+    </div>
+    
+    <div style='width:469px;float: right;'>
+     <script type="text/javascript"><!--
+google_ad_client = "ca-pub-8337091840955360";
+/* Banner */
+google_ad_slot = "8822722654";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+    </div>
+    
+    
+    <div style='clear: both'>
+      
+    </div>
+  </div>  
+  
+  
+  <div id='news_list'>
+    {% for n in news %}
+        <div class='newsitem' style='border-bottom: 1px solid #cccccc;margin-bottom: 5px;'>
+       <a style="color:3CABC4;font-size: 12px;" href='/view_news/{{n[0]}}' style='margin-bottom: 5px;'><B>{{n[1]|capitalize }}</B></a> 
+        <div style='word-wrap: break-word;font-size: 14px;'>
+            {{n[2]|safe}}
+        </div>
+        <span style="color:#B60404;font-size: 12px;">Posted On-{{n[3]}}</span>
+        <a href='/view_news/{{n[0]}}' style='color: #1EA6C4;font-size: 10px;' ><b>View this article</b></a>
+        </div>
+     {%endfor%}
+  </div>
+  <!--<div style='height: 35px;background: #8EB1CA;vertical-align: middle;padding-top: 5px;'>
+  <center><span>View more</span></center>
+  </div>-->
+  <div id="more" class='load_more'>
+    <span>more</span>
+  </div>
+{%endblock%}
+{%block scripts%}
+  <script>
+    var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    $(document).ready(function()
+                      {
+                        $('#more').click(function()
+                                              {
+                                                $.getJSON($SCRIPT_ROOT+'/get_more_news',
+                                                      
+                                                      function(response)
+                                                      {
+                                                      $('#news_list').append(response.message);
+                                                      }
+                                                      )
+                                                
+                                               
+                                              })
+                      })
+     
+  </script>
+    
+    {%endblock%}
